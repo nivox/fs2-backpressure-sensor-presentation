@@ -1,0 +1,8 @@
+examples/target/
+examples/project/target/
+examples/project/.bloop
+examples/.bloop
+examples/.metals
+examples/.bsp
+examples/project/**/metals.sbt
+.direnv
