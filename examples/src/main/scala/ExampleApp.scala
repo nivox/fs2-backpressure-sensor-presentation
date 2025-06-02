@@ -159,7 +159,6 @@ trait ExampleApp extends IOApp.Simple:
         .evalMap { _ =>
           for 
             n <- counter.getAndSet(0L)
-            _ <- IO.println(s"Interval count: $n")
           yield ()
         }
         .compile

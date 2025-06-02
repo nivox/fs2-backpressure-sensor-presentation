@@ -1,5 +1,6 @@
 examples/target/
 examples/project/target/
+examples/project/project/
 examples/project/.bloop
 examples/.bloop
 examples/.metals

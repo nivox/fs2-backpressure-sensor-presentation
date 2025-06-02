@@ -36,6 +36,7 @@
             bloop
             asciigraph
             graph-easy
+            toilet
             slides
           ];
         };
