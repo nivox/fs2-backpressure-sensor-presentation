@@ -45,7 +45,7 @@ The time it takes to process an element is the sum of the processing time of eac
 
 ---
 ## Pipelining
-By introducing async boundaries (e.g. by using `prefetch`) stages can process data concurrently:
+By introducing async boundaries (e.g. by using `prefetch`), stages can process data concurrently:
 - while stage *n* processes element *x*...
 - ... stage *n-1* starts working on element *x+1*
 

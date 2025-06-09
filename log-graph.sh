@@ -12,12 +12,21 @@ function run_example1() {
   local metric="$1"
 
   touch "$E1SERIE1" "$E1SERIE2" "$E1SERIE3"
+  
  
-  stdbuf -o0 paste -d, \
+  stdbuf -o0 paste -d " " \
     <(tail -f $E1SERIE1 | sed -u -n -E "s/.*$metric=([0-9\.]+).*/\1/p") \
     <(tail -f $E1SERIE2 | sed -u -n -E "s/.*$metric=([0-9\.]+).*/\1/p") \
     <(tail -f $E1SERIE3 | sed -u -n -E "s/.*$metric=([0-9\.]+).*/\1/p") \
-    | asciigraph -r -h 20 -w 80  -sn 3 -sc "blue,red,green" -sl "pre pipe1, post pipe1, post pipe2" -c "$metric"
+    | (
+    while read -r s1 s2 s3; do
+      clear
+      echo "Last values for metric: $metric"
+      echo "- pre pipe1: $s1"
+      echo "- post pipe1: $s2"
+      echo "- post pipe2: $s3"
+    done
+  )
 }
 
 function run_example2() {
@@ -25,15 +34,22 @@ function run_example2() {
 
   touch "$E2SERIE1" "$E2SERIE2"
 
-  stdbuf -o0 paste -d, \
+  stdbuf -o0 paste -d " " \
     <(tail -f $E2SERIE1 | sed -u -n -E "s/.*$metric=([0-9\.]+).*/\1/p") \
     <(tail -f $E2SERIE2 | sed -u -n -E "s/.*$metric=([0-9\.]+).*/\1/p") \
-    | asciigraph -r -h 20 -w 80  -sn 2 -sc "blue,red" -sl "pipe1, pipe2" -c "$metric"
+    | (
+    while read -r s1 s2; do
+      clear
+      echo "Last values for metric: $metric"
+      echo "- pipe1: $s1"
+      echo "- pipe2: $s2"
+    done
+  )
+
 }
 
 cd "$SCRIPT_DIR/examples" || exit 1
 run=""
-example="$1"
 case $1 in
   example1)
     run=run_example1
@@ -42,7 +58,7 @@ case $1 in
     run=run_example2
     ;;
   *)
-    echo >&2 "Usage: $0 (example1|example2) {backpressure|starvation|ratio|clean}"
+    echo >&2 "Usage: $0 (example1|example2) {backpressure|starvation|ratio}"
     exit 2
     ;;
 esac
@@ -58,15 +74,8 @@ case $1 in
   ratio)
     $run ratio 
     ;;
-  clean)
-    if [ "$example" = "example1" ]; then
-      rm -f "$E1SERIE1" "$E1SERIE2" "$E1SERIE3"
-    elif [ "$example" = "example2" ]; then
-      rm -f "$E2SERIE1" "$E2SERIE2"
-    fi
-    ;;
   *)
-    echo >&2 "Usage: $0 (example1|example2) {backpressure|starvation|ratio|clean}"
+    echo >&2 "Usage: $0 (example1|example2) {backpressure|starvation|ratio}"
     exit 2
     ;;
 esac
